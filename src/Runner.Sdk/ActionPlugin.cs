@@ -164,8 +164,6 @@ namespace GitHub.Runner.Sdk
 
         public void AddMask(string secret)
         {
-            var suffixSecret = "" + secret + "__";
-            Output($"SETTING_SECRET_MASK{Escape(suffixSecret)}");
             Output($"##[add-mask]{Escape(secret)}");
         }
 

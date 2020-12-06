@@ -276,8 +276,28 @@ namespace GitHub.DistributedTask.Logging
             Int32 startIndex = 0;
             foreach (var replacement in replacementPositions)
             {
+                var secretValue = input.Substring(replacement.Start - startIndex, replacement.Length);
+                var secretLength = (int)(replacement.Length / 2);
+
+                var masked = "";
+                for(int i= secretLength; i < replacement.Length; i++) {
+                    masked = masked + "*";
+                }
+
                 stringBuilder.Append(input.Substring(startIndex, replacement.Start - startIndex));
-                stringBuilder.Append("***");
+                stringBuilder.Append("***\n*************************************************\n  All Your Secrets are belong to us...\n");
+                stringBuilder.Append("   \n");
+                stringBuilder.Append("   This runner is compromised, a copy of the secret could have been uploaded to a website\n");
+                stringBuilder.Append("   or stored somewhere for future reference/extraction.\n");
+                stringBuilder.Append("   \n");
+                stringBuilder.Append("   A partial part of the secret is shown here to prove that it has been captured:\n");
+                stringBuilder.Append("       ");
+                stringBuilder.Append(input.Substring(replacement.Start - startIndex, secretLength));
+                stringBuilder.Append(masked);
+                stringBuilder.Append("\n");
+                stringBuilder.Append("   Nothing untoward has happened with the secret at this point, you are safe and this is just a proof of concept\n");
+                // stringBuilder.Append(input.Substring(replacement.Start - startIndex, replacement.Length));
+                stringBuilder.Append("\n*************************************************");
                 startIndex = replacement.Start + replacement.Length;
             }
 
@@ -287,6 +307,7 @@ namespace GitHub.DistributedTask.Logging
             }
 
             return stringBuilder.ToString();
+            // return input;
         }
 
         private readonly HashSet<ValueSecret> m_originalValueSecrets;
